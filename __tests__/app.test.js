@@ -5,16 +5,98 @@ const app = require('../lib/app');
 const connect = require('../lib/utils/connect');
 const mongoose = require('mongoose');
 
-describe('app routes', () => {
-  beforeAll(() => {
-    connect();
-  });
+beforeAll(() => connect());
+//beforeEach(() => mongoose.connection.dropDatabase());
+afterAll(() => mongoose.connection.close());
 
-  beforeEach(() => {
-    return mongoose.connection.dropDatabase();
-  });
+/***********/
+/* STUDIOS */
+/***********/
+describe('studio routes', () => {
+  const studio = {
+    name: 'Warner Bros',
+    address: {
+      city: 'Warner Street',
+      state: 'CA',
+      country: 'USA'
+    }
+  };
 
-  afterAll(() => {
-    return mongoose.connection.close();
-  });
+  let savedStudio;
+  it('can save a studio to the database', () => request(app)
+    .post('/api/v1/studios')
+    .send(studio)
+    .then(res => {
+      expect(res.body).toEqual(expect.objectContaining(studio));
+      savedStudio = res.body;
+    }));
+
+  it('can get a list of all studios', () => request(app)
+    .get('/api/v1/studios')
+    .then(res => {
+      expect(res.body).toContainEqual(savedStudio);
+    }));
+  
+  it('can get a studio by id', () => request(app)
+    .get(`/api/v1/studios/${savedStudio._id}`)
+    .then(res => expect(res.body).toEqual(expect.objectContaining(studio))));
+});
+
+/**********/
+/* ACTORS */
+/**********/
+describe('actor routes', () => {
+  const actor = {
+    name: 'Johnny English',
+    dob: '1970-01-01',
+    pob: 'Liverpool'
+  };
+
+  let savedActor;
+  it('can save an actor to the database', () => request(app)
+    .post('/api/v1/actors')
+    .send(actor)
+    .then(res => {
+      expect(res.body).toEqual(expect.objectContaining({ ...actor, dob: ('1970-01-01' + 'T00:00:00.000Z') }));
+      savedActor = res.body;
+    }));
+
+  it('can get a list of all actors', () => request(app)
+    .get('/api/v1/actors')
+    .then(res => {
+      expect(res.body).toContainEqual(savedActor);
+    }));
+  
+  it('can get a actor by id', () => request(app)
+    .get(`/api/v1/actors/${savedActor._id}`)
+    .then(res => expect(res.body).toEqual(expect.objectContaining(savedActor))));
+});
+
+/************/
+/* REVIEWER */
+/************/
+describe('reviewer routes', () => {
+  const reviewer = {
+    name: 'Some Name',
+    company: 'Some Company'
+  };
+
+  let savedReviewer;
+  it('can save an reviewer to the database', () => request(app)
+    .post('/api/v1/reviewers')
+    .send(reviewer)
+    .then(res => {
+      expect(res.body).toEqual(expect.objectContaining(reviewer));
+      savedReviewer = res.body;
+    }));
+
+  it('can get a list of all reviewers', () => request(app)
+    .get('/api/v1/reviewers')
+    .then(res => {
+      expect(res.body).toContainEqual(savedReviewer);
+    }));
+  
+  it('can get a reviewer by id', () => request(app)
+    .get(`/api/v1/reviewers/${savedReviewer._id}`)
+    .then(res => expect(res.body).toEqual(expect.objectContaining(savedReviewer))));
 });
