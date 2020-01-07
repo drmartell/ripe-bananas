@@ -16,7 +16,7 @@ describe('studio routes', () => {
   const studio = {
     name: 'Warner Bros',
     address: {
-      city: 'Warner Street',
+      city: 'Warner City',
       state: 'CA',
       country: 'USA'
     }
