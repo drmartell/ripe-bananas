@@ -1,5 +1,5 @@
 {
-  "name": ".",
+  "name": "ripe-banana",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
@@ -17,6 +17,7 @@
   "license": "ISC",
   "devDependencies": {
     "@types/jest": "^24.0.25",
+    "chance": "^1.1.4",
     "eslint": "^6.8.0",
     "jest": "^24.9.0",
     "nodemon": "^2.0.2",
